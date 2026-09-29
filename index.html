@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head><!-- Injected code, this is not present in original code --><meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content" />
+    <script class="o13qszm0">window.__consoleWorkerScript = "/o13qszm0_console_worker.js";</script>
+    <script class="o13qszm0" src="/o13qszm0_console.js" crossorigin="anonymous"></script>
+    <script class="o13qszm0">
+      if(window.eruda){
+        eruda.init({
+          theme: 'dark'
+        });
+
+        eruda._shadowRoot.querySelector('.eruda-entry-btn').style.display = 'none';
+
+        sessionStorage.setItem('__console_available', true);
+        document.addEventListener('showconsole', function () {eruda.show()});
+        document.addEventListener('hideconsole', function () {eruda.hide()});
+      }else if(document.querySelector('c-toggler')){
+        document.querySelector('c-toggler').style.display = 'none';
+      }
+      setTimeout(function(){
+        var scripts = document.querySelectorAll('.o13qszm0');
+        scripts.forEach(function(el){document.head.removeChild(el)});
+      }, 0);
+    </script><!-- Injected code, this is not present in original code -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>QR Generator</title>
+
+    <!-- Библиотека для создания QR-кодов -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" crossorigin="anonymous"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #111827, #020617);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(30, 41, 59, 0.9);
+            padding: 25px;
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 25px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            resize: none;
+            border: none;
+            outline: none;
+            border-radius: 15px;
+            padding: 15px;
+            font-size: 16px;
+            background: #0f172a;
+            color: white;
+        }
+
+        textarea::placeholder {
+            color: #64748b;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 15px;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            background: #2563eb;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .clear {
+            background: #334155;
+        }
+
+        #qr-box {
+            margin-top: 25px;
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            display: none;
+            justify-content: center;
+        }
+
+        #qr-code img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .download {
+            display: none;
+            background: #16a34a;
+        }
+
+        .error {
+            color: #f87171;
+            text-align: center;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #64748b;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>QR Generator</h1>
+
+    <div class="subtitle">
+        Создай QR-код из текста или ссылки
+    </div>
+
+    <textarea
+        id="text"
+        placeholder="Например: https://example.com"
+    ></textarea>
+
+    <button onclick="generateQR()">
+        Создать QR-код
+    </button>
+
+    <button class="clear" onclick="clearQR()">
+        Очистить
+    </button>
+
+    <div class="error" id="error">
+        Введи текст или ссылку.
+    </div>
+
+    <div id="qr-box">
+        <div id="qr-code"></div>
+    </div>
+
+    <button
+        class="download"
+        id="download"
+        onclick="downloadQR()"
+    >
+        Скачать QR-код
+    </button>
+
+    <div class="footer">
+        QR Generator
+    </div>
+
+</div>
+
+
+<script>
+
+let qr;
+
+function generateQR() {
+
+    const text = document.getElementById("text").value.trim();
+    const qrCode = document.getElementById("qr-code");
+    const qrBox = document.getElementById("qr-box");
+    const download = document.getElementById("download");
+    const error = document.getElementById("error");
+
+    if (!text) {
+
+        error.style.display = "block";
+        qrBox.style.display = "none";
+        download.style.display = "none";
+
+        return;
+    }
+
+    error.style.display = "none";
+
+    qrCode.innerHTML = "";
+
+    qr = new QRCode(qrCode, {
+        text: text,
+        width: 220,
+        height: 220,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+    });
+
+    qrBox.style.display = "flex";
+    download.style.display = "block";
+}
+
+
+function clearQR() {
+
+    document.getElementById("text").value = "";
+    document.getElementById("qr-code").innerHTML = "";
+
+    document.getElementById("qr-box").style.display = "none";
+    document.getElementById("download").style.display = "none";
+    document.getElementById("error").style.display = "none";
+}
+
+
+function downloadQR() {
+
+    const img = document.querySelector("#qr-code img");
+
+    if (!img) {
+        return;
+    }
+
+    const link = document.createElement("a");
+
+    link.href = img.src;
+    link.download = "qr-code.png";
+
+    link.click();
+}
+
+</script>
+
+</body>
+</html>
